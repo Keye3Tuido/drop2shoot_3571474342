@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <name>Drop2Shoot</name>
+    <directory>drop2shoot</directory>
+    <id>3571474342</id>
+    <description>[h1]You can now play the game using only your left hand[/h1]
+When holding the DROP key, Isaac will shoot in the direction of his gaze!
+While moving and holding the DROP key, Isaac will no longer drop trinkets!
+Play the game with your left hand, and your right hand is free to snack on some food!
+
+The mod is OFF by default. left-click on the 'Drop2Shoot' text at the bottom of the screen to toggle the mod ON/OFF; right-click and drag to move the text display position.
+[hr][/hr]
+[h1]你将可以只用左手玩游戏[/h1]
+按住丢弃键时，以撒会向目光方向射击！
+移动时按住丢弃键，以撒将不会再丢掉饰品！
+用左手玩游戏，右手可以吃零食啦！
+
+模组默认处于关闭状态，左键单击屏幕下方的'Drop2Shoot'开启/关闭功能状态；右键可拖动文字显示位置。
+</description>
+    <version>1.2</version>
+    <visibility>Public</visibility>
+    <tag id="Lua"/>
+    <tag id="Tweaks"/>
+</metadata>
