@@ -1,69 +1,36 @@
 local Drop2Shoot = RegisterMod("Drop2Shoot", 1)
-Drop2Shoot.version = 1.2
+Drop2Shoot.version = 1.3
 Drop2Shoot.Enabled = false
 
 Isaac.ConsoleOutput('Drop2Shoot v'..Drop2Shoot.version..' - Keye3Tuido\n')
 
-local ShootDirection = {}
-Drop2Shoot:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
-    ShootDirection = {}
-end)
 
 --------------------------------------------------------------------
-local Direction={
-    LEFT = 0,
-    RIGHT = 1,
-    UP = 2,
-    DOWN = 3
-}
-Drop2Shoot.Move={
-    [Direction.LEFT]=ButtonAction.ACTION_LEFT,
-    [Direction.RIGHT]=ButtonAction.ACTION_RIGHT,
-    [Direction.UP]=ButtonAction.ACTION_UP,
-    [Direction.DOWN]=ButtonAction.ACTION_DOWN
-}
-Drop2Shoot.Shoot={
-    [Direction.LEFT]=ButtonAction.ACTION_SHOOTLEFT,
-    [Direction.RIGHT]=ButtonAction.ACTION_SHOOTRIGHT,
-    [Direction.UP]=ButtonAction.ACTION_SHOOTUP,
-    [Direction.DOWN]=ButtonAction.ACTION_SHOOTDOWN
-}
-Drop2Shoot:AddCallback(ModCallbacks.MC_INPUT_ACTION, function(self, entity, hook, action)
-    if not self.Enabled then return end
-    local player = entity and entity:ToPlayer()
-    if player then
-        local hash = GetPtrHash(player)
-        local direction = ShootDirection[hash] or Direction.DOWN
-        if self.Shoot[direction] == action and Input.IsActionPressed(ButtonAction.ACTION_DROP, player.ControllerIndex) then
-            return hook == InputHook.GET_ACTION_VALUE and 1 or true
-        end
-    end
-end)
---------------------------------------------------------------------
-Drop2Shoot:AddCallback(ModCallbacks.MC_INPUT_ACTION, function(self, entity, hook, action)
-    if not self.Enabled then return end
-    local player = entity and entity:ToPlayer()
-    if player then
-        if action == ButtonAction.ACTION_DROP then
-            for _,v in pairs(self.Move) do
-                if Input.IsActionPressed(v, player.ControllerIndex) then
-                    return hook == InputHook.GET_ACTION_VALUE and 0 or false
-                end
+
+Drop2Shoot:AddCallback(13,function(self, entity, hook, action, func, util, id)
+    if self.Enabled then
+        entity=entity and entity:ToPlayer()
+        if entity then
+            util=function(x)
+                return hook>1 and x>0 or hook<2 and x
             end
-        end
-    end
-end)
---------------------------------------------------------------------
-
-Drop2Shoot:AddCallback(ModCallbacks.MC_POST_PLAYER_RENDER, function(self, player)
-    if not self.Enabled then return end
-    local hash = GetPtrHash(player)
-    if not Input.IsActionPressed(ButtonAction.ACTION_DROP, player.ControllerIndex) then
-        ShootDirection[hash] = ShootDirection[hash] or Direction.DOWN
-        for k,v in pairs(self.Move) do
-            if Input.IsActionPressed(v, player.ControllerIndex) then
-                ShootDirection[hash] = k
-                break
+            id=entity.ControllerIndex
+            func=hook>1 and Input.GetActionValue or hook<1 and Input.IsActionPressed or Input.IsActionTriggered
+            if action==11 then
+                for m=0,3 do
+                    if util(func(m,id)) then
+                        return hook>1 and 0
+                    end
+                end
+            else
+                entity=entity:GetData()
+                id,func=util(func(action,id)),func(11,id)
+                hook=util(func)
+                if action<4 and id and not hook then
+                    entity[self]=action+4
+                elseif action==(entity[self]or 7)and hook then
+                    return func
+                end
             end
         end
     end
